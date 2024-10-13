@@ -32,7 +32,7 @@ const Sidebar = () => {
         </li>
         <li>
           <NavLink
-            to="/dashboard/jobs"
+            to="/jobs"
             className={({ isActive }) =>
               isActive
                 ? "block py-2 px-4 bg-gray-700"

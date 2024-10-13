@@ -14,6 +14,7 @@ import Home from "./components/sidebar-components/home/Home"; // Home page
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/common/ProtectedRoute";
 import Tabs from "./components/sidebar-components/profile/Tabs"; // Profile Tabs
+import Jobs from "./components/sidebar-components/jobs/Jobs";
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
             </Route>
             {/* Redirect "/home" directly to the nested dashboard home */}
             <Route path="/home" element={<Navigate to="/dashboard/home" />} />
+            <Route path="/jobs" element={<Jobs />} />
             <Route
               path="/profile"
               element={<Navigate to="/dashboard/profile" />}

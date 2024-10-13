@@ -23,4 +23,13 @@ api.interceptors.request.use(
   }
 );
 
+// Optionally, add a response interceptor to handle errors globally
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    // You can handle specific error statuses here
+    return Promise.reject(error);
+  }
+);
+
 export default api;
