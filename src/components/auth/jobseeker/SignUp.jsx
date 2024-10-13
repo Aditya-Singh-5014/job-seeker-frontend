@@ -1,10 +1,11 @@
-// src/components/auth/jobseeker/SignUp.js
-import React, { useState } from "react";
-import axios from "axios";
+// frontend/src/components/auth/jobseeker/SignUp.jsx
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../../context/AuthContext";
 
 const SignUp = () => {
   const navigate = useNavigate();
+  const { signupUser } = useContext(AuthContext);
   const [formData, setFormData] = useState({
     name: "",
     username: "",
@@ -12,6 +13,7 @@ const SignUp = () => {
     phone: "",
     password: "",
   });
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     setFormData({
@@ -22,17 +24,14 @@ const SignUp = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/jobseeker/signup",
-        formData
+      await signupUser(formData);
+      navigate("/dashboard/home");
+    } catch (err) {
+      setError(
+        err.response?.data?.message || "Error signing up. Please try again."
       );
-      alert(response.data.message);
-      navigate("/dashboard", {
-        state: { username: formData.username, isSignup: true },
-      });
-    } catch (error) {
-      alert(error.response?.data?.message || "Error signing up");
     }
   };
 
@@ -42,6 +41,11 @@ const SignUp = () => {
         <h2 className="text-2xl font-bold text-center mb-6">
           Job Seeker Sign Up
         </h2>
+        {error && (
+          <div className="mb-4 p-2 bg-red-200 text-red-800 rounded">
+            {error}
+          </div>
+        )}
         <form onSubmit={handleSubmit}>
           <input
             type="text"

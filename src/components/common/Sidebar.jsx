@@ -1,4 +1,4 @@
-// src/components/common/Sidebar.jsx
+// frontend/src/components/common/Sidebar.jsx
 import React from "react";
 import { NavLink } from "react-router-dom";
 
@@ -8,29 +8,61 @@ const Sidebar = () => {
       <ul className="space-y-6 mt-10">
         <li>
           <NavLink
-            to="/home" // Updated to /home route
-            className="block py-2 px-4 hover:bg-gray-700"
+            to="/dashboard/home"
+            className={({ isActive }) =>
+              isActive
+                ? "block py-2 px-4 bg-gray-700"
+                : "block py-2 px-4 hover:bg-gray-700"
+            }
           >
             Home
           </NavLink>
         </li>
         <li>
-          <NavLink to="/profile" className="block py-2 px-4 hover:bg-gray-700">
+          <NavLink
+            to="/dashboard/profile"
+            className={({ isActive }) =>
+              isActive
+                ? "block py-2 px-4 bg-gray-700"
+                : "block py-2 px-4 hover:bg-gray-700"
+            }
+          >
             Profile
           </NavLink>
         </li>
         <li>
-          <NavLink to="/jobs" className="block py-2 px-4 hover:bg-gray-700">
+          <NavLink
+            to="/dashboard/jobs"
+            className={({ isActive }) =>
+              isActive
+                ? "block py-2 px-4 bg-gray-700"
+                : "block py-2 px-4 hover:bg-gray-700"
+            }
+          >
             Jobs
           </NavLink>
         </li>
         <li>
-          <NavLink to="/applied" className="block py-2 px-4 hover:bg-gray-700">
+          <NavLink
+            to="/dashboard/applied"
+            className={({ isActive }) =>
+              isActive
+                ? "block py-2 px-4 bg-gray-700"
+                : "block py-2 px-4 hover:bg-gray-700"
+            }
+          >
             Applied
           </NavLink>
         </li>
         <li>
-          <NavLink to="/messages" className="block py-2 px-4 hover:bg-gray-700">
+          <NavLink
+            to="/dashboard/messages"
+            className={({ isActive }) =>
+              isActive
+                ? "block py-2 px-4 bg-gray-700"
+                : "block py-2 px-4 hover:bg-gray-700"
+            }
+          >
             Messages
           </NavLink>
         </li>
