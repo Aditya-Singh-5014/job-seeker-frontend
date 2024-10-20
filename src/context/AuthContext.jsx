@@ -1,4 +1,3 @@
-// frontend/src/context/AuthContext.js
 import React, { createContext, useState, useEffect } from "react";
 import api from "../services/api"; // Use the Axios instance with interceptors
 
@@ -21,10 +20,37 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        if (auth.isAuthenticated && !auth.profile) {
+          const profileResponse = await api.get("/jobseeker/profile");
+          const { profile } = profileResponse.data;
+
+          // Update auth state with profile
+          const updatedAuth = {
+            ...auth,
+            profile,
+          };
+
+          setAuth(updatedAuth);
+          localStorage.setItem("auth", JSON.stringify(updatedAuth));
+        }
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+        // Handle token expiration or invalid token
+        logout();
+      }
+    };
+
+    fetchProfile();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [auth.isAuthenticated]);
+
   // Function to handle login
   const loginUser = async (credentials) => {
     try {
-      // Perform login
+    // Perform login
       const response = await api.post("/jobseeker/login", credentials);
       const { token, user } = response.data;
 

@@ -1,13 +1,13 @@
-// frontend/src/components/Dashboard.js
+// frontend/src/components/recruiter/RecruiterDashboard.jsx
 import React, { useEffect, useContext, useState } from "react";
 import { Outlet } from "react-router-dom";
-import Sidebar from "./common/Sidebar";
-import Navbar from "./common/Navbar";
-import { AuthContext } from "../context/AuthContext";
+import RecruiterSidebar from "./RecruiterSidebar";
+import Navbar from "../common/Navbar";
+import { RecruiterAuthContext } from "../../context/RecruiterAuthContext";
 import { useLocation } from 'react-router-dom';
 
-const Dashboard = () => {
-  const { auth } = useContext(AuthContext);
+const RecruiterDashboard = () => {
+  const { auth } = useContext(RecruiterAuthContext);
   const location = useLocation();
   const [message, setMessage] = useState('');
 
@@ -30,10 +30,10 @@ const Dashboard = () => {
   return (
     <div className="flex">
       {/* Sidebar */}
-      <Sidebar />
+      <RecruiterSidebar />
 
       <div className="flex-1 ml-64">
-        {/* Navbar with username and logout */}
+        {/* Navbar */}
         <Navbar />
 
         <div className="min-h-screen bg-gray-100 p-6">
@@ -43,7 +43,7 @@ const Dashboard = () => {
               {message}
             </div>
           )}
-          {/* Render nested routes like Home, Profile, etc. */}
+          {/* Render nested routes like Home, CreateJob, etc. */}
           <Outlet />
         </div>
       </div>
@@ -51,4 +51,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default RecruiterDashboard;

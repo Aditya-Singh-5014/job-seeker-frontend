@@ -28,11 +28,11 @@ const Overview = () => {
           </h1>
           <p className="text-lg text-blue-600 font-semibold">
             {profile.primary_role}
-          </p>{" "}
+          </p>
           {/* Job title */}
           <p className="text-lg text-gray-600 mt-1">
             {profile.experience
-              ? `${profile.experience} of experience`
+              ? `${profile.experience} years of experience`
               : "Experience not provided"}{" "}
             {/* Highlights experience */}
           </p>

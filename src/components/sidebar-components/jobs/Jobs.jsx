@@ -1,114 +1,102 @@
-import React from "react";
-import { FaLinkedin, FaGithub, FaTwitter, FaGlobe } from "react-icons/fa";
+// src/components/sidebar-components/jobs/Jobs.jsx
 
-const Jobs = ({ profile }) => {
+import React, { useEffect, useState } from "react";
+import { useNavigate, useLocation } from 'react-router-dom';
+import { FaSearch } from 'react-icons/fa';
+import api from "../../../services/api"; // Import api
+import JobDetailsModal from "./JobDetailsModal"; // Import the modal component
+
+const Jobs = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const queryParams = new URLSearchParams(location.search);
+  const [jobType, setJobType] = useState(queryParams.get('jobType') || '');
+  const [keyword, setKeyword] = useState(queryParams.get('keyword') || '');
+
+  const [jobs, setJobs] = useState([]);
+  const [selectedJob, setSelectedJob] = useState(null);
+  const [showJobModal, setShowJobModal] = useState(false);
+
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const params = new URLSearchParams();
+        if (jobType) params.append('jobType', jobType);
+        if (keyword) params.append('keyword', keyword);
+
+        const response = await api.get(`/jobs?${params.toString()}`);
+        setJobs(response.data.jobs);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchJobs();
+  }, [jobType, keyword]);
+
+  const handleSearch = () => {
+    navigate(`/dashboard/jobs?jobType=${jobType}&keyword=${keyword}`);
+  };
+
+  // Define handleApplyClick function
+  const handleApplyClick = (job) => {
+    setSelectedJob(job);
+    setShowJobModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowJobModal(false);
+    setSelectedJob(null);
+  };
+
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md max-w-4xl mx-auto">
-      {/* Header */}
-      <div
-        className={`flex items-center justify-between border-b pb-4 mb-6 ${
-          !profile.name && "hidden"
-        }`}
-      >
-        <div>
-          <h1 className="text-3xl font-bold">{profile.name}</h1>
-          <p className="text-gray-600">
-            {profile.experience} • {profile.location} • {profile.timezone} •{" "}
-            {profile.openToRemote}
-          </p>
-        </div>
-        <div className="flex space-x-4">
-          <button className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">
-            Resume
+    <div className="p-6 bg-white rounded shadow-md">
+      <div className="flex items-center mb-4">
+        <select
+          value={jobType}
+          onChange={(e) => setJobType(e.target.value)}
+          className="bg-transparent text-gray-500 outline-none px-4 py-2 rounded-l-full"
+        >
+          <option value="">Select job type</option>
+          <option value="Job">Job</option>
+          <option value="Internship">Internship</option>
+        </select>
+
+        <input
+          type="text"
+          placeholder="Enter keyword / designation / companies"
+          className="flex-grow px-4 py-2 text-gray-600 outline-none border"
+          value={keyword}
+          onChange={(e) => setKeyword(e.target.value)}
+        />
+
+        <button
+          className="bg-blue-600 text-white px-6 py-2 rounded-full flex items-center"
+          onClick={handleSearch}
+        >
+          <FaSearch className="mr-2" />
+          Search
+        </button>
+      </div>
+
+      {/* Display jobs */}
+      {jobs.map((job) => (
+        <div key={job.id} className="mb-4 p-4 border rounded">
+          <h3 className="text-xl font-semibold">{job.title}</h3>
+          <p>{job.description.substring(0, 100)}...</p>
+          <button
+            onClick={() => handleApplyClick(job)}
+            className="mt-2 bg-blue-500 text-white py-1 px-3 rounded"
+          >
+            Apply
           </button>
         </div>
-      </div>
+      ))}
 
-      {/* Looking For Section */}
-      <div className={`${!profile.lookingFor && "hidden"} mb-6`}>
-        <h2 className="text-xl font-semibold">Looking for</h2>
-        <p className="text-gray-700 mt-2">{profile.lookingFor}</p>
-      </div>
-
-      {/* Experience Section */}
-      <div className={`${!profile.experienceDetails?.length && "hidden"} mb-6`}>
-        <h2 className="text-xl font-semibold">Experience</h2>
-        {profile.experienceDetails?.map((exp, index) => (
-          <div key={index} className="mb-4">
-            <h3 className="text-lg font-medium">{exp.title}</h3>
-            <p className="text-gray-600">
-              {exp.company} • {exp.duration}
-            </p>
-            <p className="text-gray-700 mt-1">{exp.description}</p>
-          </div>
-        ))}
-      </div>
-
-      {/* Education Section */}
-      <div className={`${!profile.education?.length && "hidden"} mb-6`}>
-        <h2 className="text-xl font-semibold">Education</h2>
-        {profile.education?.map((edu, index) => (
-          <div key={index} className="mb-4">
-            <h3 className="text-lg font-medium">{edu.degree}</h3>
-            <p className="text-gray-600">
-              {edu.university} • {edu.year}
-            </p>
-          </div>
-        ))}
-      </div>
-
-      {/* Social Links */}
-      <div className="mb-6">
-        <h2
-          className={`${
-            !profile.linkedin &&
-            !profile.github &&
-            !profile.twitter &&
-            !profile.website &&
-            "hidden"
-          } text-xl font-semibold`}
-        >
-          Social Profiles
-        </h2>
-        <div className="flex space-x-4 mt-2">
-          {profile.linkedin && (
-            <a
-              href={profile.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <FaLinkedin className="text-blue-700 text-2xl" />
-            </a>
-          )}
-          {profile.github && (
-            <a href={profile.github} target="_blank" rel="noopener noreferrer">
-              <FaGithub className="text-gray-800 text-2xl" />
-            </a>
-          )}
-          {profile.twitter && (
-            <a href={profile.twitter} target="_blank" rel="noopener noreferrer">
-              <FaTwitter className="text-blue-500 text-2xl" />
-            </a>
-          )}
-          {profile.website && (
-            <a href={profile.website} target="_blank" rel="noopener noreferrer">
-              <FaGlobe className="text-green-500 text-2xl" />
-            </a>
-          )}
-        </div>
-      </div>
-
-      {/* Skills Section */}
-      <div className={`${!profile.skills && "hidden"} mb-6`}>
-        <h2 className="text-xl font-semibold">Skills</h2>
-        <p className="text-gray-700 mt-2">{profile.skills}</p>
-      </div>
-
-      {/* Achievements Section */}
-      <div className={`${!profile.achievements && "hidden"} mb-6`}>
-        <h2 className="text-xl font-semibold">Achievements</h2>
-        <p className="text-gray-700 mt-2">{profile.achievements}</p>
-      </div>
+      {showJobModal && selectedJob && (
+        <JobDetailsModal job={selectedJob} onClose={handleCloseModal} />
+      )}
     </div>
   );
 };

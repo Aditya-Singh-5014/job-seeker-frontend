@@ -6,49 +6,71 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import Dashboard from "./components/Dashboard"; // Dashboard layout with Navbar and Sidebar
-import LandingPage from "./components/LandingPage"; // Your landing page
-import SignUp from "./components/auth/jobseeker/SignUp"; // Signup page
-import Login from "./components/auth/jobseeker/Login"; // Login page
-import Home from "./components/sidebar-components/home/Home"; // Home page
+import Dashboard from "./components/Dashboard";
+import RecruiterDashboard from "./components/recruiter/RecruiterDashboard";
+import LandingPage from "./components/LandingPage";
+import SignUp from "./components/auth/jobseeker/SignUp";
+import Login from "./components/auth/jobseeker/Login";
+import RecruiterSignUp from "./components/auth/recruiter/SignUp";
+import RecruiterLogin from "./components/auth/recruiter/Login";
+import Home from "./components/sidebar-components/home/Home";
 import { AuthProvider } from "./context/AuthContext";
+import { RecruiterAuthProvider } from "./context/RecruiterAuthContext";
 import ProtectedRoute from "./components/common/ProtectedRoute";
-import Tabs from "./components/sidebar-components/profile/Tabs"; // Profile Tabs
 import Jobs from "./components/sidebar-components/jobs/Jobs";
+import Tabs from "./components/sidebar-components/profile/Tabs"; // Import Tabs component
+// import JobDetails from "./components/sidebar-components/jobs/JobDetails";
+import CreateJob from "./components/recruiter/CreateJob";
+import MyJobs from "./components/recruiter/MyJobs"; // Import MyJobs component
+import AppliedJobs from './components/sidebar-components/applied/AppliedJobs';
+import RecruiterHome from './components/recruiter/RecruiterHome';
 
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <Routes>
-          {/* Public Routes */}
-          <Route path="/" element={<LandingPage />} /> {/* Landing page */}
-          <Route path="/auth/jobseeker/signup" element={<SignUp />} />{" "}
-          {/* Sign-up */}
-          <Route path="/auth/jobseeker/login" element={<Login />} />{" "}
-          {/* Login */}
-          {/* Protected Routes */}
-          <Route element={<ProtectedRoute />}>
-            <Route path="/dashboard" element={<Dashboard />}>
-              {/* Nested routes within the Dashboard */}
-              <Route path="home" element={<Home />} />{" "}
-              {/* Home is now inside Dashboard */}
-              <Route path="profile" element={<Tabs />} />{" "}
-              {/* Profile Section */}
-              {/* Add other protected routes like /profile, /jobs, /messages here */}
-            </Route>
-            {/* Redirect "/home" directly to the nested dashboard home */}
-            <Route path="/home" element={<Navigate to="/dashboard/home" />} />
-            <Route path="/jobs" element={<Jobs />} />
+      <RecruiterAuthProvider>
+        <Router>
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/" element={<LandingPage />} />
+
+            {/* Job Seeker Auth */}
+            <Route path="/auth/jobseeker/signup" element={<SignUp />} />
+            <Route path="/auth/jobseeker/login" element={<Login />} />
+
+            {/* Recruiter Auth */}
             <Route
-              path="/profile"
-              element={<Navigate to="/dashboard/profile" />}
+              path="/auth/recruiter/signup"
+              element={<RecruiterSignUp />}
             />
-          </Route>
-          {/* Redirect any undefined routes to landing page */}
-          <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
-      </Router>
+            <Route path="/auth/recruiter/login" element={<RecruiterLogin />} />
+
+            {/* Protected Job Seeker Routes */}
+            <Route element={<ProtectedRoute />}> 
+              <Route path="/dashboard/*" element={<Dashboard />}>
+                <Route path="home" element={<Home />} />
+                <Route path="jobs" element={<Jobs />} />
+                <Route path="profile" element={<Tabs />} /> {/* Add this line */}
+                <Route path="applied-jobs" element={<AppliedJobs />} />
+                {/* Other job seeker routes */}
+              </Route>
+            </Route>
+
+            {/* Protected Recruiter Routes */}
+            <Route element={<ProtectedRoute isRecruiter />}>
+  <Route path="/recruiter/dashboard/*" element={<RecruiterDashboard />}>
+    <Route index element={<RecruiterHome />} /> {/* Add this line */}
+    <Route path="home" element={<RecruiterHome />} />
+    <Route path="create-job" element={<CreateJob />} />
+    <Route path="my-jobs" element={<MyJobs />} />
+  </Route>
+</Route>
+
+            {/* Redirect any undefined routes to landing page */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </Router>
+      </RecruiterAuthProvider>
     </AuthProvider>
   );
 }
